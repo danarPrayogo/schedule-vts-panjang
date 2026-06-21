@@ -53,8 +53,19 @@ const getMovementType = (remarks: string) => {
 const fetcher = (url: string): Promise<ParsedVTSResult> => {
   // Menambahkan cache-buster timestamp agar browser/CDN tidak menyajikan cache lama
   const fetchUrl = `${url}&t=${Date.now()}`;
-  return fetch(fetchUrl)
-    .then((res) => res.text())
+  return fetch(fetchUrl, {
+    cache: 'no-store',
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('Received HTML instead of CSV. Google Sheets may be offline or restricted.');
+      }
+      return res.text();
+    })
     .then((csvText) => {
       const parsed = Papa.parse<string[]>(csvText, { header: false, skipEmptyLines: true });
       const rows = parsed.data;
@@ -171,8 +182,9 @@ const fetcher = (url: string): Promise<ParsedVTSResult> => {
 export default function VTSBoard() {
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx-AGlee7IojZ49KYMcdJSaPzaaWfQ-M95w5o8p6ujMmccW0gK9TAXq_sczAzeTR282ShHeKO6D-zx/pub?output=csv';
 
-  const { data, error, isLoading, mutate } = useSWR<ParsedVTSResult>(sheetUrl, fetcher, {
-    refreshInterval: 10000, // Refresh every 10 seconds
+  const { data, error, isLoading, isValidating, mutate } = useSWR<ParsedVTSResult>(sheetUrl, fetcher, {
+    refreshInterval: 5000, // Refresh every 5 seconds for quicker updates
+    dedupingInterval: 0,   // Bypass deduping so manual sync/polling fetches immediately
   });
 
   // State untuk Filter & Pencarian
@@ -192,6 +204,25 @@ export default function VTSBoard() {
   const [isHovered, setIsHovered] = useState(false);
   const [isHoveredMobile, setIsHoveredMobile] = useState(false);
   const [showDeveloperModal, setShowDeveloperModal] = useState(false);
+  
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerMobileRef = React.useRef<HTMLDivElement>(null);
+  const touchTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleTouchStart = () => {
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+    setIsHoveredMobile(true);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+    touchTimeoutRef.current = setTimeout(() => {
+      if (containerMobileRef.current) {
+        containerMobileRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      setIsHoveredMobile(false);
+    }, 5000);
+  };
 
   // Real-time local clock
   const [timeStr, setTimeStr] = useState('');
@@ -251,8 +282,42 @@ export default function VTSBoard() {
 
   // Synchronize display lists with filtered data
   useEffect(() => {
-    setDisplayVessels(filteredVessels);
-    setDisplayVesselsMobile(filteredVessels);
+    // 1. Desktop Sync: Update items in-place to preserve rotated scroll order
+    setDisplayVessels((prev) => {
+      // If length is different or empty, reset completely
+      if (prev.length !== filteredVessels.length || prev.length === 0) {
+        return filteredVessels;
+      }
+      // Check if we have different items (by checking no)
+      const prevNos = new Set(prev.map((v) => v.no));
+      const hasDifferentItems = filteredVessels.some((v) => !prevNos.has(v.no));
+      if (hasDifferentItems) {
+        return filteredVessels;
+      }
+      // If matching structure, update fields in-place
+      return prev.map((oldV) => {
+        const updated = filteredVessels.find((newV) => newV.no === oldV.no);
+        return updated || oldV;
+      });
+    });
+
+    // 2. Mobile Sync: Update items in-place to preserve rotated scroll order
+    setDisplayVesselsMobile((prev) => {
+      if (prev.length !== filteredVessels.length || prev.length === 0) {
+        return filteredVessels;
+      }
+      const prevNos = new Set(prev.map((v) => v.no));
+      const hasDifferentItems = filteredVessels.some((v) => !prevNos.has(v.no));
+      if (hasDifferentItems) {
+        return filteredVessels;
+      }
+      return prev.map((oldV) => {
+        const updated = filteredVessels.find((newV) => newV.no === oldV.no);
+        return updated || oldV;
+      });
+    });
+
+    // Keep transitions smooth and don't reset offsets unless items changed length
     setTranslateY(0);
     setTranslateYMobile(0);
     setIsTransitioning(false);
@@ -428,7 +493,7 @@ export default function VTSBoard() {
           </svg>
           <h2 className="text-xl font-bold mb-2">Koneksi Gagal</h2>
           <p className="text-slate-400 text-sm mb-4">Gagal memuat data dari Google Sheets. Pastikan publikasi CSV sheet aktif.</p>
-          <button onClick={() => mutate()} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm">
+          <button onClick={() => mutate(undefined, { revalidate: true })} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm">
             Coba Lagi
           </button>
         </div>
@@ -451,13 +516,14 @@ export default function VTSBoard() {
         <div className="flex items-center gap-3">
           <span>Polling Auto-Refresh</span>
           <button
-            onClick={() => mutate()}
-            className="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors"
+            onClick={() => mutate(undefined, { revalidate: true })}
+            disabled={isValidating}
+            className="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-3.5 h-3.5 ${isValidating ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 12H18.5" />
             </svg>
-            SINKRONKAN
+            {isValidating ? 'MENYINKRONKAN...' : 'SINKRONKAN'}
           </button>
         </div>
       </div>
@@ -514,10 +580,16 @@ export default function VTSBoard() {
 
               {/* Table Body Viewport */}
               <div
-                className="overflow-hidden relative"
+                ref={containerRef}
+                className="overflow-y-auto custom-scrollbar relative"
                 style={{ height: filteredVessels.length > 7 ? '490px' : 'auto' }}
                 onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseLeave={() => {
+                  setIsHovered(false);
+                  if (containerRef.current) {
+                    containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
               >
                 <div
                   style={{
@@ -581,12 +653,18 @@ export default function VTSBoard() {
               </div>
             ) : (
               <div
-                className="overflow-hidden relative max-w-md mx-auto"
+                ref={containerMobileRef}
+                className="overflow-y-auto custom-scrollbar relative max-w-md mx-auto"
                 style={{ height: filteredVessels.length > 2 ? '416px' : 'auto' }}
                 onMouseEnter={() => setIsHoveredMobile(true)}
-                onMouseLeave={() => setIsHoveredMobile(false)}
-                onTouchStart={() => setIsHoveredMobile(true)}
-                onTouchEnd={() => setIsHoveredMobile(false)}
+                onMouseLeave={() => {
+                  setIsHoveredMobile(false);
+                  if (containerMobileRef.current) {
+                    containerMobileRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
               >
                 <div
                   className="space-y-4"
