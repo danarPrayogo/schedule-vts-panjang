@@ -503,14 +503,14 @@ export default function VTSBoard() {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-300"
+      className="min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-300"
       style={{
         backgroundImage: "linear-gradient(rgba(7, 11, 19, 0.85), rgba(7, 11, 19, 0.95)), url('/bg-vts.jpeg')",
       }}
     >
 
       {/* Top Banner Status */}
-      <div className="bg-slate-900/60 border-b border-slate-800/80 backdrop-blur-md px-4 py-2 text-xs flex justify-between items-center text-slate-400">
+      <div className="bg-slate-900/60 border-b border-slate-800/80 backdrop-blur-md px-4 py-2 text-xs flex flex-col sm:flex-row justify-between items-center gap-2 text-slate-400">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -682,7 +682,7 @@ export default function VTSBoard() {
                     <div
                       key={`${vessel.no}-${index}`}
                       onClick={() => setSelectedVessel(vessel)}
-                      className="h-[200px] bg-slate-900/40 hover:bg-slate-900/70 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-5 backdrop-blur-md shadow-md cursor-pointer transition-colors duration-200 flex flex-col justify-between"
+                      className="h-[200px] bg-slate-900/40 hover:bg-slate-900/70 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-4 backdrop-blur-md shadow-md cursor-pointer transition-colors duration-200 flex flex-col justify-between"
                     >
                       <div className="flex justify-between items-start">
                         <div className="space-y-1 overflow-hidden pr-2">
@@ -701,26 +701,26 @@ export default function VTSBoard() {
                         <div className="shrink-0">{renderRemarksBadges(vessel.keterangan)}</div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-3 border-t border-slate-800/40 text-xs overflow-hidden">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-2 border-t border-slate-800/40 text-xs overflow-hidden">
                         <div className="truncate">
-                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Waktu</span>
-                          <span className="font-mono text-cyan-400 font-bold">{vessel.waktu}</span>
+                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">Waktu</span>
+                          <span className="font-mono text-cyan-400 font-bold text-xs">{vessel.waktu}</span>
                         </div>
                         <div className="truncate">
-                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Asal</span>
-                          <span className="font-semibold text-slate-200 uppercase truncate">{vessel.asal}</span>
+                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">Asal</span>
+                          <span className="font-semibold text-slate-200 uppercase truncate text-xs">{vessel.asal}</span>
                         </div>
                         <div className="truncate">
-                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Tujuan</span>
-                          <span className="font-semibold text-cyan-400 uppercase truncate">{vessel.tujuan}</span>
+                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">Tujuan</span>
+                          <span className="font-semibold text-cyan-400 uppercase truncate text-xs">{vessel.tujuan}</span>
                         </div>
                         <div className="truncate">
-                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">ETA</span>
-                          <span className="font-mono text-slate-300 truncate">{vessel.eta || '-'}</span>
+                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">ETA</span>
+                          <span className="font-mono text-slate-300 truncate text-xs">{vessel.eta || '-'}</span>
                         </div>
                         <div className="col-span-2 truncate">
-                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Waktu Sandar / Labuh</span>
-                          <span className="font-semibold text-slate-200 truncate">{vessel.waktuSandarLabuh || '-'}</span>
+                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">Waktu Sandar / Labuh</span>
+                          <span className="font-semibold text-slate-200 truncate text-xs">{vessel.waktuSandarLabuh || '-'}</span>
                         </div>
                       </div>
                     </div>
