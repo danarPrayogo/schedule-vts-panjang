@@ -182,6 +182,16 @@ export default function VTSBoard() {
   const [cargoFilter, setCargoFilter] = useState('ALL');
   const [selectedVessel, setSelectedVessel] = useState<VesselRecord | null>(null);
 
+  // State untuk Animasi Auto-scroll
+  const [displayVessels, setDisplayVessels] = useState<VesselRecord[]>([]);
+  const [displayVesselsMobile, setDisplayVesselsMobile] = useState<VesselRecord[]>([]);
+  const [translateY, setTranslateY] = useState(0);
+  const [translateYMobile, setTranslateYMobile] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isTransitioningMobile, setIsTransitioningMobile] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isHoveredMobile, setIsHoveredMobile] = useState(false);
+
   // Real-time local clock
   const [timeStr, setTimeStr] = useState('');
   useEffect(() => {
@@ -237,6 +247,60 @@ export default function VTSBoard() {
       return matchesSearch && matchesStatus && matchesAgent && matchesCargo;
     });
   }, [data, searchQuery, statusFilter, agentFilter, cargoFilter]);
+
+  // Synchronize display lists with filtered data
+  useEffect(() => {
+    setDisplayVessels(filteredVessels);
+    setDisplayVesselsMobile(filteredVessels);
+    setTranslateY(0);
+    setTranslateYMobile(0);
+    setIsTransitioning(false);
+    setIsTransitioningMobile(false);
+  }, [filteredVessels]);
+
+  // Auto-scroll loop effect
+  useEffect(() => {
+    if (selectedVessel) return;
+
+    const desktopHeight = 70; // Height of one row
+    const mobileHeight = 216; // Height of one mobile card (200px) + gap (16px)
+
+    const interval = setInterval(() => {
+      // 1. Desktop Auto-scroll (only if more than 7 rows visible and not hovered)
+      if (filteredVessels.length > 7 && !isHovered) {
+        setIsTransitioning(true);
+        setTranslateY(-desktopHeight);
+
+        setTimeout(() => {
+          setDisplayVessels((prev) => {
+            if (prev.length === 0) return prev;
+            const [first, ...rest] = prev;
+            return [...rest, first];
+          });
+          setIsTransitioning(false);
+          setTranslateY(0);
+        }, 600);
+      }
+
+      // 2. Mobile Auto-scroll (only if more than 2 cards visible and not hovered)
+      if (filteredVessels.length > 2 && !isHoveredMobile) {
+        setIsTransitioningMobile(true);
+        setTranslateYMobile(-mobileHeight);
+
+        setTimeout(() => {
+          setDisplayVesselsMobile((prev) => {
+            if (prev.length === 0) return prev;
+            const [first, ...rest] = prev;
+            return [...rest, first];
+          });
+          setIsTransitioningMobile(false);
+          setTranslateYMobile(0);
+        }, 600);
+      }
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [filteredVessels, isHovered, isHoveredMobile, selectedVessel]);
 
   // Summary Metrics
   const stats = useMemo(() => {
@@ -434,52 +498,61 @@ export default function VTSBoard() {
           </div>
         ) : (
           <section className="bg-slate-900/20 border border-slate-800/60 rounded-2xl overflow-hidden backdrop-blur-md shadow-xl hidden lg:block">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[1000px]">
-                <thead>
-                  <tr className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                    <th className="p-4 w-16 text-center">No</th>
-                    <th className="p-4 w-28">Waktu</th>
-                    <th className="p-4 w-72">Nama Kapal / Call Sign</th>
-                    <th className="p-4 w-44">Asal</th>
-                    <th className="p-4 w-44">Tujuan</th>
-                    <th className="p-4 w-36">ETA</th>
-                    <th className="p-4 w-48">Waktu Sandar / Labuh</th>
-                    <th className="p-4 w-40">Keterangan</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60 text-sm">
-                  {filteredVessels.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className="p-12 text-center text-slate-500 italic">
-                        Tidak ada kapal yang sesuai dengan filter pencarian.
-                      </td>
-                    </tr>
+            <div className="min-w-[1000px]">
+              {/* Header Grid */}
+              <div className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest grid grid-cols-[60px_100px_1fr_160px_160px_140px_180px_140px] gap-2 items-center px-6 py-4">
+                <div className="text-center">No</div>
+                <div>Waktu</div>
+                <div>Nama Kapal / Call Sign</div>
+                <div>Asal</div>
+                <div>Tujuan</div>
+                <div>ETA</div>
+                <div>Waktu Sandar / Labuh</div>
+                <div>Keterangan</div>
+              </div>
+
+              {/* Table Body Viewport */}
+              <div
+                className="overflow-hidden relative"
+                style={{ height: filteredVessels.length > 7 ? '490px' : 'auto' }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <div
+                  style={{
+                    transform: `translateY(${translateY}px)`,
+                    transition: isTransitioning ? 'transform 600ms ease-in-out' : 'none',
+                  }}
+                >
+                  {displayVessels.length === 0 ? (
+                    <div className="p-12 text-center text-slate-500 italic border-b border-slate-800/60">
+                      Tidak ada kapal yang sesuai dengan filter pencarian.
+                    </div>
                   ) : (
-                    filteredVessels.map((vessel, index) => (
-                      <tr
-                        key={vessel.no || index}
+                    displayVessels.map((vessel, index) => (
+                      <div
+                        key={`${vessel.no}-${index}`}
                         onClick={() => setSelectedVessel(vessel)}
-                        className={`hover:bg-cyan-500/5 transition-colors cursor-pointer group ${
+                        className={`h-[70px] grid grid-cols-[60px_100px_1fr_160px_160px_140px_180px_140px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${
                           index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
-                        }`}
+                        } hover:bg-cyan-500/5`}
                       >
-                        <td className="p-4 text-center text-slate-500 font-mono font-bold text-xs">{vessel.no}</td>
-                        <td className="p-4 font-mono font-medium text-cyan-400/90 text-xs">{vessel.waktu}</td>
-                        <td className="p-4">
-                          <div className="font-bold text-white group-hover:text-cyan-300 transition-colors uppercase tracking-wide">
+                        <div className="text-center text-slate-500 font-mono font-bold text-xs">{vessel.no}</div>
+                        <div className="font-mono font-medium text-cyan-400/90 text-xs">{vessel.waktu}</div>
+                        <div className="pr-4 truncate">
+                          <div className="font-bold text-white group-hover:text-cyan-300 transition-colors uppercase tracking-wide truncate">
                             {vessel.namaKapal.split('/')[0]}
                           </div>
                           {vessel.namaKapal.includes('/') && (
-                            <div className="text-xs text-slate-400 font-mono font-semibold mt-0.5">
+                            <div className="text-xs text-slate-400 font-mono font-semibold mt-0.5 truncate">
                               CS: {vessel.namaKapal.split('/')[1]}
                             </div>
                           )}
-                        </td>
-                        <td className="p-4 text-slate-200 font-semibold uppercase">{vessel.asal}</td>
-                        <td className="p-4 text-cyan-400 font-bold uppercase">{vessel.tujuan}</td>
-                        <td className="p-4 font-mono text-xs text-slate-300">{vessel.eta}</td>
-                        <td className="p-4">
+                        </div>
+                        <div className="text-slate-200 font-semibold uppercase truncate">{vessel.asal}</div>
+                        <div className="text-cyan-400 font-bold uppercase truncate">{vessel.tujuan}</div>
+                        <div className="font-mono text-xs text-slate-300 truncate">{vessel.eta}</div>
+                        <div>
                           <span className={`font-semibold text-xs uppercase px-2 py-1 rounded inline-block ${
                             vessel.waktuSandarLabuh.toUpperCase().includes('ANCHOR') || vessel.waktuSandarLabuh.toUpperCase().includes('ANCOR')
                               ? 'text-amber-400 bg-amber-400/10 border border-amber-500/20'
@@ -489,72 +562,89 @@ export default function VTSBoard() {
                           }`}>
                             {vessel.waktuSandarLabuh || '-'}
                           </span>
-                        </td>
-                        <td className="p-4">{renderRemarksBadges(vessel.keterangan)}</td>
-                      </tr>
+                        </div>
+                        <div className="overflow-hidden">{renderRemarksBadges(vessel.keterangan)}</div>
+                      </div>
                     ))
                   )}
-                </tbody>
-              </table>
+                </div>
+              </div>
             </div>
           </section>
         )}
 
         {/* Vessel Cards (Mobile/Tablet Mode) */}
         {!isLoading && (
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
+          <section className="lg:hidden">
             {filteredVessels.length === 0 ? (
-              <div className="col-span-full bg-slate-900/30 p-8 text-center text-slate-500 rounded-2xl border border-slate-800">
+              <div className="bg-slate-900/30 p-8 text-center text-slate-500 rounded-2xl border border-slate-800">
                 Tidak ada data kapal.
               </div>
             ) : (
-              filteredVessels.map((vessel, index) => (
+              <div
+                className="overflow-hidden relative max-w-md mx-auto"
+                style={{ height: filteredVessels.length > 2 ? '416px' : 'auto' }}
+                onMouseEnter={() => setIsHoveredMobile(true)}
+                onMouseLeave={() => setIsHoveredMobile(false)}
+                onTouchStart={() => setIsHoveredMobile(true)}
+                onTouchEnd={() => setIsHoveredMobile(false)}
+              >
                 <div
-                  key={vessel.no || index}
-                  onClick={() => setSelectedVessel(vessel)}
-                  className="bg-slate-900/40 hover:bg-slate-900/70 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-5 backdrop-blur-md shadow-md cursor-pointer transition-all duration-200 space-y-4"
+                  className="space-y-4"
+                  style={{
+                    transform: `translateY(${translateYMobile}px)`,
+                    transition: isTransitioningMobile ? 'transform 600ms ease-in-out' : 'none',
+                  }}
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold font-mono text-slate-500 bg-slate-950 px-1.5 py-0.5 rounded uppercase">
-                        No. {vessel.no}
-                      </span>
-                      <h3 className="text-lg font-bold text-white uppercase tracking-wide">
-                        {vessel.namaKapal.split('/')[0]}
-                      </h3>
-                      {vessel.namaKapal.includes('/') && (
-                        <p className="text-xs font-mono font-medium text-slate-400">
-                          CS: {vessel.namaKapal.split('/')[1]}
-                        </p>
-                      )}
-                    </div>
-                    {renderRemarksBadges(vessel.keterangan)}
-                  </div>
+                  {displayVesselsMobile.map((vessel, index) => (
+                    <div
+                      key={`${vessel.no}-${index}`}
+                      onClick={() => setSelectedVessel(vessel)}
+                      className="h-[200px] bg-slate-900/40 hover:bg-slate-900/70 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-5 backdrop-blur-md shadow-md cursor-pointer transition-colors duration-200 flex flex-col justify-between"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1 overflow-hidden pr-2">
+                          <span className="text-[10px] font-bold font-mono text-slate-500 bg-slate-950 px-1.5 py-0.5 rounded uppercase">
+                            No. {vessel.no}
+                          </span>
+                          <h3 className="text-base font-bold text-white uppercase tracking-wide truncate">
+                            {vessel.namaKapal.split('/')[0]}
+                          </h3>
+                          {vessel.namaKapal.includes('/') && (
+                            <p className="text-xs font-mono font-medium text-slate-400 truncate">
+                              CS: {vessel.namaKapal.split('/')[1]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="shrink-0">{renderRemarksBadges(vessel.keterangan)}</div>
+                      </div>
 
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-3 pt-3 border-t border-slate-800/40 text-xs">
-                    <div>
-                      <span className="block text-slate-500 font-semibold uppercase">Waktu</span>
-                      <span className="font-mono text-cyan-400 font-bold">{vessel.waktu}</span>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-3 border-t border-slate-800/40 text-xs overflow-hidden">
+                        <div className="truncate">
+                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Waktu</span>
+                          <span className="font-mono text-cyan-400 font-bold">{vessel.waktu}</span>
+                        </div>
+                        <div className="truncate">
+                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Asal</span>
+                          <span className="font-semibold text-slate-200 uppercase truncate">{vessel.asal}</span>
+                        </div>
+                        <div className="truncate">
+                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Tujuan</span>
+                          <span className="font-semibold text-cyan-400 uppercase truncate">{vessel.tujuan}</span>
+                        </div>
+                        <div className="truncate">
+                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">ETA</span>
+                          <span className="font-mono text-slate-300 truncate">{vessel.eta || '-'}</span>
+                        </div>
+                        <div className="col-span-2 truncate">
+                          <span className="block text-slate-500 font-semibold uppercase text-[10px]">Waktu Sandar / Labuh</span>
+                          <span className="font-semibold text-slate-200 truncate">{vessel.waktuSandarLabuh || '-'}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <span className="block text-slate-500 font-semibold uppercase">Asal</span>
-                      <span className="font-semibold text-slate-200 uppercase">{vessel.asal}</span>
-                    </div>
-                    <div>
-                      <span className="block text-slate-500 font-semibold uppercase">Tujuan</span>
-                      <span className="font-semibold text-cyan-400 uppercase">{vessel.tujuan}</span>
-                    </div>
-                    <div>
-                      <span className="block text-slate-500 font-semibold uppercase">ETA</span>
-                      <span className="font-mono text-slate-300">{vessel.eta || '-'}</span>
-                    </div>
-                    <div className="col-span-2">
-                      <span className="block text-slate-500 font-semibold uppercase">Waktu Sandar / Labuh</span>
-                      <span className="font-semibold text-slate-200">{vessel.waktuSandarLabuh || '-'}</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))
+              </div>
             )}
           </section>
         )}

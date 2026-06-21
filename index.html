@@ -1,0 +1,392 @@
+
+Percakapan dengan Gemini
+buatkan logika animasi jadi tampilan urutan no 1 akan pindah ke paling bawah dan dikuti selanjutnya
+
+Berikut adalah penjelasan logika dan cara membuat animasi rotasi data seperti yang Anda minta, di mana baris nomor 1 pada tabel di image_182137.png akan berpindah ke paling bawah dan baris lainnya bergeser ke atas.
+
+Secara konsep, ini disebut efek Carousel List atau Seamless Ticker. Logikanya dibagi menjadi dua bagian: Manipulasi Data (Array) dan Animasi Visual (CSS/JS).
+
+## 1. Logika Manipulasi Data (Array)
+Data pada tabel tersebut pada dasarnya adalah sebuah antrean (array). Untuk memindahkan urutan pertama ke urutan terakhir, kita menggunakan operasi dasar array:
+
+Ambil data pada indeks pertama (shift()).
+
+Masukkan data tersebut ke urutan paling akhir (push()).
+
+Ilustrasi:
+
+[1, 2, 3, 4, 5] -> Ambil angka 1, letakkan di belakang -> [2, 3, 4, 5, 1]
+
+## 2. Logika Animasi Visual
+Agar perpindahannya tidak terkesan kasar (tiba-tiba hilang dan muncul di bawah), kita perlu melakukan trik animasi transform dan manipulasi DOM (Document Object Model).
+
+Langkah-langkah Animasinya:
+
+Transisi Naik: Berikan animasi CSS pada seluruh kontainer baris (atau baris pertama) untuk bergerak ke atas (misalnya menggunakan transform: translateY(-100%) atau margin negatif sebesar tinggi satu baris).
+
+Hilangkan Baris Pertama (Secara Visual): Tambahkan efek fade out (opacity: 0) pada baris pertama saat bergerak naik agar terlihat lebih halus.
+
+Pindah Elemen di DOM: Setelah durasi animasi selesai (menggunakan setTimeout di JavaScript), pindahkan elemen HTML baris pertama tersebut ke urutan paling bawah di dalam kontainer induknya.
+
+Reset Posisi: Kembalikan nilai transform atau margin kontainer ke posisi semula secara instan (tanpa animasi), dan kembalikan opacity elemen yang dipindah menjadi 1. Karena elemen pertama sudah pindah ke bawah, baris ke-2 sekarang otomatis berada di atas tanpa terlihat melompat.
+
+## 3. Contoh Implementasi (HTML, CSS, JavaScript)
+Berikut adalah contoh kerangka kode sederhananya:
+
+HTML
+
+HTML
+<div class="table-container">
+  <ul id="vessel-list">
+    <li class="row">1. KM.SEJAHTERA 18</li>
+    <li class="row">2. TB NUSA XII 2023</li>
+    <li class="row">3. TB.PATRIA 24</li>
+    <li class="row">4. MV. ADHIGUNA TARAHAN</li>
+  </ul>
+</div>
+CSS
+
+CSS
+.table-container {
+  height: 200px; /* Sesuaikan dengan kebutuhan */
+  overflow: hidden; /* Sembunyikan elemen yang keluar jalur */
+}
+
+#vessel-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  transition: transform 0.5s ease-in-out; /* Durasi animasi geser */
+}
+
+.row {
+  height: 50px; /* Tinggi mutlak setiap baris */
+  border-bottom: 1px solid #333;
+  display: flex;
+  align-items: center;
+}
+JavaScript
+
+JavaScript
+const list = document.getElementById('vessel-list');
+const rowHeight = 50; // Harus sama dengan tinggi .row di CSS
+const animationDuration = 500; // 0.5 detik
+
+function rotateList() {
+  // 1. Jalankan animasi geser ke atas
+  list.style.transition = `transform ${animationDuration}ms ease-in-out`;
+  list.style.transform = `translateY(-${rowHeight}px)`;
+
+  // 2. Tunggu animasi selesai
+  setTimeout(() => {
+    // Ambil elemen pertama
+    const firstItem = list.children[0];
+    
+    // Pindahkan ke paling bawah
+    list.appendChild(firstItem);
+    
+    // 3. Reset posisi seketika (tanpa animasi) agar siap untuk perulangan berikutnya
+    list.style.transition = 'none';
+    list.style.transform = 'translateY(0)';
+  }, animationDuration);
+}
+
+// Jalankan fungsi rotateList setiap 3 detik
+setInterval(rotateList, 3000);
+Tips Tambahan untuk Tabel pada Gambar:
+
+Karena tabel Anda menggunakan baris tabel yang kompleks (table atau div grid), pastikan tinggi setiap baris konsisten agar perhitungan translateY tepat dan tidak ada pergeseran layout yang mengganggu mata.
+
+Jika Anda menggunakan framework seperti React atau Vue, manipulasi langsung pada CSS dan DOM ini bisa diganti dengan memanipulasi state array-nya, lalu dikombinasikan dengan library animasi seperti Framer Motion atau Vue <TransitionGroup>.
+
+berikan contoh dalam html saja
+
+File HTML Anda sudah siap:
+Ikon HTML
+animasi_tabel_kapal
+ HTML 
+Buka
+
+Berikut adalah penjelasan mengenai logika yang saya terapkan pada file HTML di atas:
+
+Struktur HTML: Saya memisahkan antara bagian Header tabel (yang tetap diam/statis) dan Body tabel (yang akan berputar). Bagian body dibungkus oleh sebuah kontainer dengan overflow: hidden; agar baris yang bergeser ke atas tidak terlihat meluber keluar dari tabel.
+
+Desain & Styling (CSS): Saya membuat tampilannya bergaya dark mode dengan aksen warna cyan dan kuning amber menyerupai desain antarmuka jadwal kapal yang Anda lampirkan. Tinggi setiap baris (height: 70px) dibuat tetap agar perhitungan pergeserannya presisi.
+
+Logika JavaScript (Animasi):
+
+Setiap 3,5 detik, fungsi rotateTable() dijalankan.
+
+Fungsi ini akan mengubah gaya CSS transform: translateY(-70px) pada seluruh blok tabel body. Hal ini menyebabkan semua baris secara visual bergeser naik secara halus (selama 0.6 detik).
+
+Tepat setelah animasi geser selesai (setTimeout), baris urutan pertama di dalam struktur HTML diambil (firstRow) dan dipindahkan ke paling bawah (appendChild).
+
+Sesaat setelah dipindah, pergeseran translateY dibatalkan (dikembalikan ke 0) tanpa animasi. Karena baris pertama sudah pindah ke bawah, baris kedua otomatis menempati posisi teratas dengan sangat mulus sehingga seolah-olah putaran tersebut tidak pernah terputus (seamless carousel).
+
+Silakan unduh atau buka file HTML tersebut di browser Anda untuk melihat langsung animasinya berjalan!
+
+
+
+
+Gemini adalah AI dan dapat melakukan kesalahan.
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasi Rotasi Jadwal Kapal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b111e;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1e293b;
+        }
+
+        /* Header Tabel (Tetap Diam, Tidak Ikut Berputar) */
+        .table-header {
+            display: grid;
+            grid-template-columns: 50px 80px 250px 150px 150px 140px 180px 120px;
+            background-color: #0b111e;
+            padding: 15px 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            border-bottom: 2px solid #1e293b;
+        }
+
+        /* Container untuk baris yang bergerak */
+        .table-body-container {
+            height: 350px; /* Batasi tinggi kontainer untuk menampilkan beberapa baris saja */
+            overflow: hidden; /* Sembunyikan baris yang keluar batas */
+            position: relative;
+        }
+
+        .table-body {
+            position: relative;
+            /* Kita akan menggerakkan ini menggunakan JavaScript */
+        }
+
+        /* Gaya Baris Tabel */
+        .table-row {
+            display: grid;
+            grid-template-columns: 50px 80px 250px 150px 150px 140px 180px 120px;
+            padding: 15px 20px;
+            align-items: center;
+            height: 70px; /* Tinggi baris mutlak/tetap agar perhitungan animasi presisi */
+            border-bottom: 1px solid #1e293b;
+            background-color: #0f172a;
+            font-size: 13px;
+        }
+
+        /* Warna & Gaya Spesifik Kolom (Meniru Gambar) */
+        .col-no { color: #64748b; font-weight: bold; }
+        .col-waktu { color: #00d2ff; font-weight: bold; }
+        
+        .col-kapal { font-weight: bold; }
+        .col-kapal .cs { color: #64748b; font-size: 11px; font-weight: normal; margin-top: 3px; }
+        
+        .col-asal { font-weight: 600; color: #e2e8f0; }
+        .col-tujuan { font-weight: bold; color: #00d2ff; }
+        .col-eta { color: #94a3b8; }
+        
+        /* Badges */
+        .badge-anchor {
+            background-color: rgba(217, 119, 6, 0.2);
+            color: #fbbf24;
+            border: 1px solid #d97706;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .badge-td {
+            background-color: rgba(14, 116, 144, 0.2);
+            color: #22d3ee;
+            border: 1px solid #0e7490;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            width: fit-content;
+        }
+        .status-in { background-color: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+        .status-out { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; border: 1px solid #3b82f6; }
+        .status-num { background-color: #1e293b; color: #94a3b8; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+
+        .info-keterangan {
+            font-size: 11px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="table-wrapper">
+        <!-- HEADER TABEL -->
+        <div class="table-header">
+            <div>NO</div>
+            <div>WAKTU</div>
+            <div>NAMA KAPAL / CALL SIGN</div>
+            <div>ASAL</div>
+            <div>TUJUAN</div>
+            <div>ETA</div>
+            <div>WAKTU SANDAR</div>
+            <div>KETERANGAN</div>
+        </div>
+
+        <!-- BODY TABEL DENGAN ANIMASI -->
+        <div class="table-body-container">
+            <div id="vessel-table-body" class="table-body">
+                
+                <!-- Baris 1 -->
+                <div class="table-row">
+                    <div class="col-no">1</div>
+                    <div class="col-waktu">08.20LT</div>
+                    <div class="col-kapal">
+                        KM.SEJAHTERA 18
+                        <div class="cs">CS: YBWB</div>
+                    </div>
+                    <div class="col-asal">PANGKAL BALAM</div>
+                    <div class="col-tujuan">PANJANG</div>
+                    <div class="col-eta">1506/0920LT</div>
+                    <div><span class="badge-anchor">ANCHOR</span></div>
+                    <div><span class="badge-status status-in">IN <span class="status-num">11</span></span></div>
+                </div>
+
+                <!-- Baris 2 -->
+                <div class="table-row">
+                    <div class="col-no">2</div>
+                    <div class="col-waktu">08.50LT</div>
+                    <div class="col-kapal">
+                        TB NUSA XII 2023
+                        <div class="cs">CS: YDC6363 - TK CAKRAWALA XVI</div>
+                    </div>
+                    <div class="col-asal">TARAHAN</div>
+                    <div class="col-tujuan">SURALAYA</div>
+                    <div class="col-eta">1606/1500LT</div>
+                    <div><span class="badge-td">TD : 0900LT</span></div>
+                    <div><span class="badge-status status-out">OUT <span class="status-num">10</span></span></div>
+                </div>
+
+                <!-- Baris 3 -->
+                <div class="table-row">
+                    <div class="col-no">3</div>
+                    <div class="col-waktu">09.56LT</div>
+                    <div class="col-kapal">
+                        TB.PATRIA 24
+                        <div class="cs">CS: YDC4425-TK.PATRIA 3212</div>
+                    </div>
+                    <div class="col-asal">TARAHAN</div>
+                    <div class="col-tujuan">PLTU LABUHAN</div>
+                    <div class="col-eta">1606/0900LT</div>
+                    <div><span class="badge-td">TD : 0940LT</span></div>
+                    <div><span class="badge-status status-out">OUT <span class="status-num">10</span></span></div>
+                </div>
+
+                <!-- Baris 4 -->
+                <div class="table-row">
+                    <div class="col-no">4</div>
+                    <div class="col-waktu">10.36LT</div>
+                    <div class="col-kapal">
+                        MV. ADHIGUNA TARAHAN
+                        <div class="cs">CS: YDSM</div>
+                    </div>
+                    <div class="col-asal">SURALAYA</div>
+                    <div class="col-tujuan">TARAHAN</div>
+                    <div class="col-eta">1506/1300LT</div>
+                    <div><span class="badge-anchor">ANCHOR : 1252LT</span></div>
+                    <div><span class="badge-status status-in">IN <span class="status-num">30</span></span></div>
+                </div>
+
+                <!-- Baris 5 -->
+                <div class="table-row">
+                    <div class="col-no">5</div>
+                    <div class="col-waktu">10.38LT</div>
+                    <div class="col-kapal">
+                        SPOB.ARGHA 2
+                        <div class="cs">CS: YCQL2</div>
+                    </div>
+                    <div class="col-asal">MERAK</div>
+                    <div class="col-tujuan">PANJANG</div>
+                    <div class="col-eta">1506/1500LT</div>
+                    <div><span class="badge-anchor">ANCHOR</span></div>
+                    <div><span class="badge-status status-in">IN <span class="status-num">10</span></span></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tableBody = document.getElementById('vessel-table-body');
+        const rowHeight = 70; // Harus sama dengan nilai 'height' pada .table-row di CSS
+        const animationDuration = 600; // Durasi pergeseran (0.6 detik)
+        const intervalTime = 3500; // Jeda waktu sebelum baris berikutnya bergeser (3.5 detik)
+
+        function rotateTable() {
+            // 1. Tambahkan transisi CSS dan geser kontainer ke atas sebesar tinggi satu baris
+            tableBody.style.transition = `transform ${animationDuration}ms ease-in-out`;
+            tableBody.style.transform = `translateY(-${rowHeight}px)`;
+
+            // 2. Tunggu sampai animasi geser selesai
+            setTimeout(() => {
+                // Ambil elemen baris pertama saat ini
+                const firstRow = tableBody.children[0];
+                
+                // Pindahkan baris pertama tersebut ke urutan paling bawah di dalam kontainer
+                tableBody.appendChild(firstRow);
+                
+                // 3. Matikan transisi seketika dan kembalikan posisi kontainer ke 0
+                // Efeknya: Baris ke-2 sekarang naik ke posisi teratas secara mulus, 
+                // sedangkan baris ke-1 sudah aman berada di paling bawah tanpa terlihat melompat.
+                tableBody.style.transition = 'none';
+                tableBody.style.transform = 'translateY(0)';
+            }, animationDuration);
+        }
+
+        // Jalankan fungsi secara berulang otomatis
+        setInterval(rotateTable, intervalTime);
+    </script>
+</body>
+</html>
+animasi_tabel_kapal.html
+Menampilkan animasi_tabel_kapal.html.
