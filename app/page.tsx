@@ -172,7 +172,7 @@ export default function VTSBoard() {
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx-AGlee7IojZ49KYMcdJSaPzaaWfQ-M95w5o8p6ujMmccW0gK9TAXq_sczAzeTR282ShHeKO6D-zx/pub?output=csv';
 
   const { data, error, isLoading, mutate } = useSWR<ParsedVTSResult>(sheetUrl, fetcher, {
-    refreshInterval: 10000, // Refresh every 10 seconds
+    refreshInterval: 5000, // Refresh every 10 seconds
   });
 
   // State untuk Filter & Pencarian
@@ -554,10 +554,10 @@ export default function VTSBoard() {
                         <div className="font-mono text-xs text-slate-300 truncate">{vessel.eta}</div>
                         <div>
                           <span className={`font-semibold text-xs uppercase px-2 py-1 rounded inline-block ${vessel.waktuSandarLabuh.toUpperCase().includes('ANCHOR') || vessel.waktuSandarLabuh.toUpperCase().includes('ANCOR')
-                              ? 'text-amber-400 bg-amber-400/10 border border-amber-500/20'
-                              : vessel.waktuSandarLabuh.toUpperCase().includes('TD')
-                                ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-500/20'
-                                : 'text-slate-300 bg-slate-800'
+                            ? 'text-amber-400 bg-amber-400/10 border border-amber-500/20'
+                            : vessel.waktuSandarLabuh.toUpperCase().includes('TD')
+                              ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-500/20'
+                              : 'text-slate-300 bg-slate-800'
                             }`}>
                             {vessel.waktuSandarLabuh || '-'}
                           </span>
