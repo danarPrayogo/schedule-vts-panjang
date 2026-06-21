@@ -172,7 +172,7 @@ export default function VTSBoard() {
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx-AGlee7IojZ49KYMcdJSaPzaaWfQ-M95w5o8p6ujMmccW0gK9TAXq_sczAzeTR282ShHeKO6D-zx/pub?output=csv';
 
   const { data, error, isLoading, mutate } = useSWR<ParsedVTSResult>(sheetUrl, fetcher, {
-    refreshInterval: 5000, // Refresh every 10 seconds
+    refreshInterval: 10000, // Refresh every 10 seconds
   });
 
   // State untuk Filter & Pencarian
