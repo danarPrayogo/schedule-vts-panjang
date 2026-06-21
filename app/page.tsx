@@ -204,7 +204,7 @@ export default function VTSBoard() {
   const [isHovered, setIsHovered] = useState(false);
   const [isHoveredMobile, setIsHoveredMobile] = useState(false);
   const [showDeveloperModal, setShowDeveloperModal] = useState(false);
-  
+
   const containerRef = React.useRef<HTMLDivElement>(null);
   const containerMobileRef = React.useRef<HTMLDivElement>(null);
   const touchTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -502,7 +502,12 @@ export default function VTSBoard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070b13] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,40,78,0.25),rgba(255,255,255,0))] text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-300">
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-300"
+      style={{
+        backgroundImage: "linear-gradient(rgba(7, 11, 19, 0.85), rgba(7, 11, 19, 0.95)), url('/bg-vts.jpeg')",
+      }}
+    >
 
       {/* Top Banner Status */}
       <div className="bg-slate-900/60 border-b border-slate-800/80 backdrop-blur-md px-4 py-2 text-xs flex justify-between items-center text-slate-400">
