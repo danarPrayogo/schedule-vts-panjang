@@ -307,7 +307,7 @@ export default function VTSBoard() {
   const stats = useMemo(() => {
     const total = data?.vessels?.length || 0;
     if (!data?.vessels) return { total, arrivals: 0, departures: 0, anchored: 0, totalGt: 0 };
-    
+
     let arrivals = 0;
     let departures = 0;
     let anchored = 0;
@@ -401,7 +401,7 @@ export default function VTSBoard() {
     if (!cargo || cargo.toUpperCase() === 'NIL') {
       return <span className="text-slate-500 italic text-sm">Nil</span>;
     }
-    
+
     const c = cargo.toUpperCase();
     let colorClass = 'bg-slate-800 text-slate-300 border border-slate-700';
     if (c.includes('COAL') || c.includes('BATUBARA')) {
@@ -411,7 +411,7 @@ export default function VTSBoard() {
     } else if (c.includes('SOLAR') || c.includes('BIOSOLAR') || c.includes('LPG') || c.includes('B40')) {
       colorClass = 'bg-purple-500/10 text-purple-300 border border-purple-500/20';
     }
-    
+
     return (
       <span className={`text-xs px-2 py-0.5 rounded font-medium border uppercase ${colorClass}`}>
         {cargo}
@@ -438,7 +438,7 @@ export default function VTSBoard() {
 
   return (
     <div className="min-h-screen bg-[#070b13] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,40,78,0.25),rgba(255,255,255,0))] text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-300">
-      
+
       {/* Top Banner Status */}
       <div className="bg-slate-900/60 border-b border-slate-800/80 backdrop-blur-md px-4 py-2 text-xs flex justify-between items-center text-slate-400">
         <div className="flex items-center gap-2">
@@ -450,8 +450,8 @@ export default function VTSBoard() {
         </div>
         <div className="flex items-center gap-3">
           <span>Polling Auto-Refresh</span>
-          <button 
-            onClick={() => mutate()} 
+          <button
+            onClick={() => mutate()}
             className="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -477,7 +477,7 @@ export default function VTSBoard() {
                 </h1>
               </div>
             </div>
-            
+
 
           </div>
 
@@ -534,9 +534,8 @@ export default function VTSBoard() {
                       <div
                         key={`${vessel.no}-${index}`}
                         onClick={() => setSelectedVessel(vessel)}
-                        className={`h-[70px] grid grid-cols-[50px_85px_1fr_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${
-                          index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
-                        } hover:bg-cyan-500/5`}
+                        className={`h-[70px] grid grid-cols-[50px_85px_1fr_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
+                          } hover:bg-cyan-500/5`}
                       >
                         <div className="text-center text-slate-500 font-mono font-bold text-xs">{vessel.no}</div>
                         <div className="font-mono font-medium text-cyan-400/90 text-xs">{vessel.waktu}</div>
@@ -554,13 +553,12 @@ export default function VTSBoard() {
                         <div className="text-cyan-400 font-bold uppercase truncate">{vessel.tujuan}</div>
                         <div className="font-mono text-xs text-slate-300 truncate">{vessel.eta}</div>
                         <div>
-                          <span className={`font-semibold text-xs uppercase px-2 py-1 rounded inline-block ${
-                            vessel.waktuSandarLabuh.toUpperCase().includes('ANCHOR') || vessel.waktuSandarLabuh.toUpperCase().includes('ANCOR')
+                          <span className={`font-semibold text-xs uppercase px-2 py-1 rounded inline-block ${vessel.waktuSandarLabuh.toUpperCase().includes('ANCHOR') || vessel.waktuSandarLabuh.toUpperCase().includes('ANCOR')
                               ? 'text-amber-400 bg-amber-400/10 border border-amber-500/20'
                               : vessel.waktuSandarLabuh.toUpperCase().includes('TD')
-                              ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-500/20'
-                              : 'text-slate-300 bg-slate-800'
-                          }`}>
+                                ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-500/20'
+                                : 'text-slate-300 bg-slate-800'
+                            }`}>
                             {vessel.waktuSandarLabuh || '-'}
                           </span>
                         </div>
@@ -652,11 +650,11 @@ export default function VTSBoard() {
 
         {/* Footer info text */}
         <div className="flex justify-end pt-2">
-          <button 
+          <button
             onClick={() => setShowDeveloperModal(true)}
             className="text-[11px] text-slate-500 hover:text-cyan-400 hover:shadow-[0_0_10px_rgba(34,211,238,0.15)] font-mono tracking-wider transition-all duration-200 cursor-pointer border border-transparent hover:border-slate-800/60 bg-slate-950/20 hover:bg-slate-900/40 px-3 py-1.5 rounded-lg"
           >
-            Powered By VTS PANJANG X KP IF 2026
+            Created By VTS PANJANG X KP IF 2026
           </button>
         </div>
 
@@ -665,7 +663,7 @@ export default function VTSBoard() {
       {/* Vessel Detail Modal Overlay */}
       {selectedVessel && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-all">
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-lg bg-[#0e1726] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden relative"
           >
@@ -691,7 +689,7 @@ export default function VTSBoard() {
 
             {/* Modal Content */}
             <div className="p-6 space-y-6">
-              
+
               {/* Primary info grid */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-850">
@@ -792,11 +790,11 @@ export default function VTSBoard() {
 
       {/* Developer Profile Modal Overlay */}
       {showDeveloperModal && (
-        <div 
+        <div
           onClick={() => setShowDeveloperModal(false)}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-all"
         >
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-sm bg-[#0e1726]/90 border border-slate-800/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden relative"
           >
@@ -819,7 +817,7 @@ export default function VTSBoard() {
                 </svg>
               </button>
             </div>
-            
+
             {/* Modal Content */}
             <div className="p-5 space-y-4">
               <p className="text-xs text-slate-400 leading-relaxed">
