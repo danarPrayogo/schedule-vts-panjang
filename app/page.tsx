@@ -410,7 +410,7 @@ export default function VTSBoard() {
               </div>
               <div>
                 <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-                  VTS PORT TRAFFIC BOARD
+                  VTS PANJANG TRAFFIC BOARD
                 </h1>
               </div>
             </div>
