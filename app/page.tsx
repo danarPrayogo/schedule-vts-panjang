@@ -204,7 +204,6 @@ export default function VTSBoard() {
   const [isTransitioningMobile, setIsTransitioningMobile] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [isHoveredMobile, setIsHoveredMobile] = useState(false);
-  const [showDeveloperModal, setShowDeveloperModal] = useState(false);
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const containerMobileRef = React.useRef<HTMLDivElement>(null);
@@ -327,7 +326,7 @@ export default function VTSBoard() {
 
   // Auto-scroll loop effect
   useEffect(() => {
-    if (selectedVessel || showDeveloperModal) return;
+    if (selectedVessel) return;
 
     const desktopHeight = 70; // Height of one row
     const mobileHeight = 216; // Height of one mobile card (200px) + gap (16px)
@@ -367,7 +366,7 @@ export default function VTSBoard() {
     }, 3500);
 
     return () => clearInterval(interval);
-  }, [filteredVessels, isHovered, isHoveredMobile, selectedVessel, showDeveloperModal]);
+  }, [filteredVessels, isHovered, isHoveredMobile, selectedVessel]);
 
   // Summary Metrics
   const stats = useMemo(() => {
@@ -734,12 +733,9 @@ export default function VTSBoard() {
 
         {/* Footer info text */}
         <div className="flex justify-end pt-2">
-          <button
-            onClick={() => setShowDeveloperModal(true)}
-            className="text-[11px] text-slate-500 hover:text-cyan-400 hover:shadow-[0_0_10px_rgba(34,211,238,0.15)] font-mono tracking-wider transition-all duration-200 cursor-pointer border border-transparent hover:border-slate-800/60 bg-slate-950/20 hover:bg-slate-900/40 px-3 py-1.5 rounded-lg"
-          >
+          <span className="text-[11px] text-slate-500 font-mono tracking-wider bg-slate-950/20 px-3 py-1.5 rounded-lg border border-slate-800/30">
             Created By VTS PANJANG X KP IF 2026
-          </button>
+          </span>
         </div>
 
       </div>
@@ -867,72 +863,6 @@ export default function VTSBoard() {
                 {renderRemarksBadges(selectedVessel.keterangan)}
               </div>
 
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Developer Profile Modal Overlay */}
-      {showDeveloperModal && (
-        <div
-          onClick={() => setShowDeveloperModal(false)}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-all"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm bg-[#0e1726]/90 border border-slate-800/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden relative"
-          >
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-slate-900 to-slate-900/80 p-5 border-b border-slate-800 flex justify-between items-center">
-              <div className="space-y-1">
-                <span className="text-[9px] font-bold text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full uppercase tracking-wider font-mono">
-                  Developer Profile
-                </span>
-                <h3 className="text-lg font-black text-white uppercase tracking-wider">
-                  KP IF 2026 VTS PANJANG
-                </h3>
-              </div>
-              <button
-                onClick={() => setShowDeveloperModal(false)}
-                className="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-1.5 rounded-lg transition-all cursor-pointer"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-5 space-y-4">
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Kerja Praktek Mahasiswa Teknik Informatika 2026 di VTS Panjang. Klik untuk mengunjungi profil Instagram:
-              </p>
-              <div className="space-y-2">
-                {[
-                  { name: 'Developer 1', role: 'Frontend Engineer', instagram: 'https://instagram.com/instagram_dev1', handle: '@instagram_dev1' },
-                  { name: 'Developer 2', role: 'UI/UX Designer', instagram: 'https://instagram.com/instagram_dev2', handle: '@instagram_dev2' },
-                  { name: 'Developer 3', role: 'Data Analyst', instagram: 'https://instagram.com/instagram_dev3', handle: '@instagram_dev3' },
-                ].map((dev, idx) => (
-                  <a
-                    key={idx}
-                    href={dev.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 bg-slate-900/50 hover:bg-cyan-500/10 border border-slate-850 hover:border-cyan-500/30 rounded-xl transition-all group cursor-pointer"
-                  >
-                    <div>
-                      <div className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">{dev.name}</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">{dev.role}</div>
-                    </div>
-                    <div className="flex items-center gap-1 text-[10px] text-cyan-400 font-semibold bg-cyan-950/40 px-2 py-0.5 rounded-lg border border-cyan-800/30">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                      </svg>
-                      {dev.handle}
-                    </div>
-                  </a>
-                ))}
-              </div>
             </div>
           </div>
         </div>
