@@ -180,7 +180,8 @@ const fetcher = (url: string): Promise<ParsedVTSResult> => {
 };
 
 export default function VTSBoard() {
-  const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx-AGlee7IojZ49KYMcdJSaPzaaWfQ-M95w5o8p6ujMmccW0gK9TAXq_sczAzeTR282ShHeKO6D-zx/pub?output=csv';
+  // PENTING: Variabel ini yang diubah menjadi link export dengan ID Sheet kamu
+  const sheetUrl = 'https://docs.google.com/spreadsheets/d/104VYfDm-RsN1tB6XgAe3TNMzob4WcTnuNDhuQ5iYUi4/export?format=csv&gid=0';
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<ParsedVTSResult>(sheetUrl, fetcher, {
     refreshInterval: 5000, // Refresh every 5 seconds for quicker updates
