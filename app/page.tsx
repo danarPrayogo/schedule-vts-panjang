@@ -4,6 +4,75 @@ import React, { useState, useMemo, useEffect } from 'react';
 import useSWR from 'swr';
 import Papa from 'papaparse';
 
+interface ParsedCoordinates {
+  lat: number;
+  lng: number;
+  rawLat: string;
+  rawLng: string;
+  latFormatted: string;
+  lngFormatted: string;
+}
+
+// Fungsi konversi format DDM (Degrees and Decimal Minutes) ke DD (Decimal Degrees)
+function parseDDM(coordStr: string): ParsedCoordinates | null {
+  if (!coordStr) return null;
+  
+  // Format pemisah bisa garis miring atau spasi
+  const parts = coordStr.split('/');
+  if (parts.length !== 2) return null;
+
+  const rawLat = parts[0].trim();
+  const rawLng = parts[1].trim();
+
+  const convertPart = (part: string) => {
+    // Normalisasi koma ke titik, hapus spasi berlebih
+    const cleaned = part.replace(/,/g, '.').replace(/\s+/g, '');
+    
+    // Menangkap: Derajat, Menit, dan Cardinal Direction
+    // Mendukung trailing tick setelah menit: e.g. 05'18.7'S atau 05'32,000S
+    const match = cleaned.match(/^(\d+)'([\d.]+)'?([NSEWnsew])$/i);
+    if (!match) return null;
+
+    const degrees = parseInt(match[1], 10);
+    const minutes = parseFloat(match[2]);
+    const direction = match[3].toUpperCase();
+
+    if (isNaN(degrees) || isNaN(minutes)) return null;
+    
+    let decimal = degrees + (minutes / 60);
+
+    // Negative sign for South and West
+    if (direction === 'S' || direction === 'W') {
+      decimal = -decimal;
+    }
+
+    return {
+      decimal,
+      degrees,
+      minutes,
+      direction
+    };
+  };
+
+  const latResult = convertPart(rawLat);
+  const lngResult = convertPart(rawLng);
+
+  if (!latResult || !lngResult) return null;
+
+  // Validasi cardinal direction
+  if (latResult.direction !== 'S' && latResult.direction !== 'N') return null;
+  if (lngResult.direction !== 'E' && lngResult.direction !== 'W') return null;
+
+  return {
+    lat: latResult.decimal,
+    lng: lngResult.decimal,
+    rawLat: `${latResult.degrees}° ${latResult.minutes.toFixed(3)}' ${latResult.direction}`,
+    rawLng: `${lngResult.degrees}° ${lngResult.minutes.toFixed(3)}' ${lngResult.direction}`,
+    latFormatted: `${latResult.decimal.toFixed(6)}°`,
+    lngFormatted: `${lngResult.decimal.toFixed(6)}°`
+  };
+}
+
 // Tipe data untuk metadata VTS
 interface VTSMetadata {
   sektor: string;
@@ -548,8 +617,6 @@ export default function VTSBoard() {
                 </h1>
               </div>
             </div>
-
-
           </div>
 
           <div className="text-left md:text-right bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl md:min-w-[200px] flex flex-col justify-center">
@@ -560,6 +627,8 @@ export default function VTSBoard() {
             <span className="text-[10px] text-slate-500 font-mono mt-1 uppercase">SINKRONISASI AKTIF</span>
           </div>
         </header>
+
+
 
 
 
@@ -809,25 +878,68 @@ export default function VTSBoard() {
               </div>
 
               {/* Coordinates Section */}
-              <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-850 flex items-center justify-between">
-                <div>
-                  <span className="block text-[10px] font-bold text-slate-500 uppercase">Posisi Labuh / Jangkar</span>
-                  <span className="font-mono text-sm text-slate-200 font-bold mt-1 block">{selectedVessel.posisiLabuh || 'ON POSITION'}</span>
-                </div>
-                {getMapLink(selectedVessel.posisiLabuh) && (
-                  <a
-                    href={getMapLink(selectedVessel.posisiLabuh)!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 shadow-lg shadow-cyan-500/20"
-                  >
-                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    </svg>
-                    Buka Peta
-                  </a>
-                )}
-              </div>
+              {(() => {
+                const parsed = parseDDM(selectedVessel.posisiLabuh);
+                if (parsed) {
+                  return (
+                    <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-850 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <span className="block text-[10px] font-bold text-slate-500 uppercase">Posisi Labuh / Jangkar</span>
+                          <span className="font-mono text-sm text-slate-200 font-bold mt-1 block">{selectedVessel.posisiLabuh}</span>
+                        </div>
+                        {getMapLink(selectedVessel.posisiLabuh) && (
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${parsed.lat},${parsed.lng}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 shadow-lg shadow-cyan-500/20 cursor-pointer"
+                          >
+                            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            </svg>
+                            Buka Peta
+                          </a>
+                        )}
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800/40 text-xs">
+                        <div>
+                          <span className="block text-[9px] text-slate-500 font-semibold uppercase">Latitude Desimal</span>
+                          <span className="font-mono text-cyan-300 font-bold block">{parsed.latFormatted}</span>
+                        </div>
+                        <div>
+                          <span className="block text-[9px] text-slate-500 font-semibold uppercase">Longitude Desimal</span>
+                          <span className="font-mono text-cyan-300 font-bold block">{parsed.lngFormatted}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Fallback for non-coordinates or unparseable coordinates (e.g. "ON POSITION", "OUT", "SANDAR")
+                return (
+                  <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-850 flex items-center justify-between">
+                    <div>
+                      <span className="block text-[10px] font-bold text-slate-500 uppercase">Posisi Labuh / Jangkar</span>
+                      <span className="font-mono text-sm text-slate-200 font-bold mt-1 block">{selectedVessel.posisiLabuh || 'ON POSITION'}</span>
+                    </div>
+                    {getMapLink(selectedVessel.posisiLabuh) && (
+                      <a
+                        href={getMapLink(selectedVessel.posisiLabuh)!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 shadow-lg shadow-cyan-500/20"
+                      >
+                        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        </svg>
+                        Buka Peta
+                      </a>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Specs Grid */}
               <div className="grid grid-cols-3 gap-2.5 bg-slate-950/40 p-4 rounded-xl border border-slate-850 text-center">
