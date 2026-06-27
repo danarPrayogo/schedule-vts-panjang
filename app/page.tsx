@@ -16,7 +16,7 @@ interface ParsedCoordinates {
 // Fungsi konversi format DDM (Degrees and Decimal Minutes) ke DD (Decimal Degrees)
 function parseDDM(coordStr: string): ParsedCoordinates | null {
   if (!coordStr) return null;
-  
+
   // Format pemisah bisa garis miring atau spasi
   const parts = coordStr.split('/');
   if (parts.length !== 2) return null;
@@ -27,7 +27,7 @@ function parseDDM(coordStr: string): ParsedCoordinates | null {
   const convertPart = (part: string) => {
     // Normalisasi koma ke titik, hapus spasi berlebih
     const cleaned = part.replace(/,/g, '.').replace(/\s+/g, '');
-    
+
     // Menangkap: Derajat, Menit, dan Cardinal Direction
     // Mendukung trailing tick setelah menit: e.g. 05'18.7'S atau 05'32,000S
     const match = cleaned.match(/^(\d+)'([\d.]+)'?([NSEWnsew])$/i);
@@ -38,7 +38,7 @@ function parseDDM(coordStr: string): ParsedCoordinates | null {
     const direction = match[3].toUpperCase();
 
     if (isNaN(degrees) || isNaN(minutes)) return null;
-    
+
     let decimal = degrees + (minutes / 60);
 
     // Negative sign for South and West
@@ -263,6 +263,7 @@ export default function VTSBoard() {
   const [agentFilter, setAgentFilter] = useState('ALL');
   const [cargoFilter, setCargoFilter] = useState('ALL');
   const [selectedVessel, setSelectedVessel] = useState<VesselRecord | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // State untuk Animasi Auto-scroll
   const [displayVessels, setDisplayVessels] = useState<VesselRecord[]>([]);
@@ -803,10 +804,39 @@ export default function VTSBoard() {
         {/* Footer info text */}
         <div className="flex justify-end pt-2">
           <span className="text-[11px] text-slate-500 font-mono tracking-wider bg-slate-950/20 px-3 py-1.5 rounded-lg border border-slate-800/30">
-            Created By VTS PANJANG X KP IF 2026
+            Created By VTS PANJANG X KP TEKNIK INFORMATIKA ITERA 2026
           </span>
         </div>
 
+      </div>
+
+      {/* Floating Search Button */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+        {/* Search Input Popup */}
+        {isSearchOpen && (
+          <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl shadow-2xl animate-in slide-in-from-bottom-5 fade-in">
+            <input
+              type="text"
+              autoFocus
+              placeholder="Cari Nama / MMSI..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-64 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors placeholder:text-slate-500"
+            />
+          </div>
+        )}
+
+        {/* The Button */}
+        <button
+          onClick={() => setIsSearchOpen(!isSearchOpen)}
+          className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(34,211,238,0.4)] w-14 h-14 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+        >
+          {isSearchOpen ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          )}
+        </button>
       </div>
 
       {/* Vessel Detail Modal Overlay */}
@@ -902,7 +932,7 @@ export default function VTSBoard() {
                           </a>
                         )}
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800/40 text-xs">
                         <div>
                           <span className="block text-[9px] text-slate-500 font-semibold uppercase">Latitude Desimal</span>
