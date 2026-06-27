@@ -600,7 +600,7 @@ export default function VTSBoard() {
             
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <svg suppressHydrationWarning className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </div>
               <input
                 type="text"
@@ -634,9 +634,7 @@ export default function VTSBoard() {
                 disabled={isValidating}
                 className="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-mono tracking-wider"
               >
-                <svg suppressHydrationWarning className={`w-3.5 h-3.5 ${isValidating ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 12H18.5" />
-                </svg>
+                <img src="/load.png" alt="Loading" className={`w-3.5 h-3.5 ${isValidating ? 'animate-spin' : ''}`} />
                 {isValidating ? 'MENYINKRONKAN...' : 'SINKRONKAN'}
               </button>
             </div>
@@ -670,7 +668,7 @@ export default function VTSBoard() {
               {/* Table Body Viewport */}
               <div
                 ref={containerRef}
-                className="overflow-hidden relative"
+                className="overflow-y-auto overflow-x-hidden relative custom-scrollbar"
                 style={{ height: filteredVessels.length > 7 ? '490px' : 'auto' }}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => {
@@ -743,7 +741,7 @@ export default function VTSBoard() {
             ) : (
               <div
                 ref={containerMobileRef}
-                className="overflow-hidden relative max-w-md mx-auto"
+                className="overflow-y-auto overflow-x-hidden relative max-w-md mx-auto custom-scrollbar"
                 style={{ height: filteredVessels.length > 2 ? '416px' : 'auto' }}
                 onMouseEnter={() => setIsHoveredMobile(true)}
                 onMouseLeave={() => {
