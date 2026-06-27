@@ -586,7 +586,7 @@ export default function VTSBoard() {
 
         {/* Header Dashboard */}
         <header className="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-6 backdrop-blur-md shadow-xl flex flex-col md:flex-row md:justify-between md:items-center gap-6">
-          <div className="space-y-2">
+          <div className="space-y-4 w-full md:w-auto">
             <div className="flex items-center gap-3">
               <div className="p-1 rounded-xl bg-white/5 border border-white/10 shadow-lg">
                 <img src="/logo-navigasi.png" alt="Logo Navigasi" className="w-12 h-12 object-contain" />
@@ -596,6 +596,19 @@ export default function VTSBoard() {
                   VTS PANJANG TRAFFIC BOARD
                 </h1>
               </div>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Cari Nama Kapal / MMSI..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-slate-950/40 border border-slate-700/80 rounded-xl py-2.5 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-cyan-500/80 focus:ring-1 focus:ring-cyan-500/50 transition-all placeholder:text-slate-500 shadow-inner"
+              />
             </div>
           </div>
 
@@ -806,34 +819,7 @@ export default function VTSBoard() {
 
       </div>
 
-      {/* Floating Search Button */}
-      <div className="fixed bottom-16 right-6 z-40 flex flex-col items-end gap-3">
-        {/* Search Input Popup */}
-        {isSearchOpen && (
-          <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl shadow-2xl animate-in slide-in-from-bottom-5 fade-in">
-            <input
-              type="text"
-              autoFocus
-              placeholder="Cari Nama / MMSI..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors placeholder:text-slate-500"
-            />
-          </div>
-        )}
 
-        {/* The Button */}
-        <button
-          onClick={() => setIsSearchOpen(!isSearchOpen)}
-          className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(34,211,238,0.4)] w-14 h-14 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
-        >
-          {isSearchOpen ? (
-            <svg suppressHydrationWarning className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
-          ) : (
-            <svg suppressHydrationWarning className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-          )}
-        </button>
-      </div>
 
       {/* Footer info text */}
       <footer className="fixed bottom-0 left-0 right-0 w-full bg-slate-950/80 border-t border-slate-800/50 py-3 text-center backdrop-blur-md z-30">
