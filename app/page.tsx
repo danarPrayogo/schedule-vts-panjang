@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import useSWR from 'swr';
 import Papa from 'papaparse';
+import Link from 'next/link';
 
 interface ParsedCoordinates {
   lat: number;
@@ -558,7 +559,7 @@ export default function VTSBoard() {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-center items-center p-6">
         <div className="bg-red-500/10 border border-red-500/30 p-6 rounded-xl max-w-md text-center">
-          <svg className="w-12 h-12 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg suppressHydrationWarning className="w-12 h-12 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <h2 className="text-xl font-bold mb-2">Koneksi Gagal</h2>
@@ -573,37 +574,15 @@ export default function VTSBoard() {
 
   return (
     <div
-      className="min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-300"
+      className="min-h-screen w-full flex flex-col overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-300"
       style={{
         backgroundImage: "linear-gradient(rgba(7, 11, 19, 0.85), rgba(7, 11, 19, 0.95)), url('/bg-vts.jpeg')",
       }}
     >
 
-      {/* Top Banner Status */}
-      <div className="bg-slate-900/60 border-b border-slate-800/80 backdrop-blur-md px-4 py-2 text-xs flex flex-col sm:flex-row justify-between items-center gap-2 text-slate-400">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <span>VTS PANJANG LIVE STREAM</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <span>Polling Auto-Refresh</span>
-          <button
-            onClick={() => mutate(undefined, { revalidate: true })}
-            disabled={isValidating}
-            className="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg className={`w-3.5 h-3.5 ${isValidating ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 12H18.5" />
-            </svg>
-            {isValidating ? 'MENYINKRONKAN...' : 'SINKRONKAN'}
-          </button>
-        </div>
-      </div>
 
-      <div className="max-w-[1360px] w-full mx-auto p-4 md:p-8 space-y-6">
+
+      <div className="max-w-[1360px] flex-1 w-full mx-auto p-4 md:p-8 space-y-6 pb-20">
 
         {/* Header Dashboard */}
         <header className="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-6 backdrop-blur-md shadow-xl flex flex-col md:flex-row md:justify-between md:items-center gap-6">
@@ -620,12 +599,34 @@ export default function VTSBoard() {
             </div>
           </div>
 
-          <div className="text-left md:text-right bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl md:min-w-[200px] flex flex-col justify-center">
-            <span className="text-xs text-slate-500 uppercase tracking-widest font-mono">WAKTU SEKARANG</span>
-            <span className="text-2xl md:text-3xl font-bold font-mono text-cyan-300 drop-shadow-[0_0_10px_rgba(34,211,238,0.2)] mt-1">
-              {timeStr || '00:00:00 LT'}
-            </span>
-            <span className="text-[10px] text-slate-500 font-mono mt-1 uppercase">SINKRONISASI AKTIF</span>
+          <div className="flex flex-col items-end gap-3">
+            <div className="text-left md:text-right bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl md:min-w-[200px] flex flex-col justify-center w-full">
+              <span className="text-xs text-slate-500 uppercase tracking-widest font-mono">WAKTU SEKARANG</span>
+              <span className="text-2xl md:text-3xl font-bold font-mono text-cyan-300 drop-shadow-[0_0_10px_rgba(34,211,238,0.2)] mt-1">
+                {timeStr || '00:00:00 LT'}
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-3 bg-slate-900/40 border border-slate-800/60 px-4 py-2 rounded-xl backdrop-blur-md shadow-sm w-full justify-between">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono uppercase tracking-wider">LIVE</span>
+              </div>
+              <div className="w-px h-4 bg-slate-700"></div>
+              <button
+                onClick={() => mutate(undefined, { revalidate: true })}
+                disabled={isValidating}
+                className="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-mono tracking-wider"
+              >
+                <svg suppressHydrationWarning className={`w-3.5 h-3.5 ${isValidating ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 12H18.5" />
+                </svg>
+                {isValidating ? 'MENYINKRONKAN...' : 'SINKRONKAN'}
+              </button>
+            </div>
           </div>
         </header>
 
@@ -656,7 +657,7 @@ export default function VTSBoard() {
               {/* Table Body Viewport */}
               <div
                 ref={containerRef}
-                className="overflow-y-auto custom-scrollbar relative"
+                className="overflow-hidden relative"
                 style={{ height: filteredVessels.length > 7 ? '490px' : 'auto' }}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => {
@@ -729,7 +730,7 @@ export default function VTSBoard() {
             ) : (
               <div
                 ref={containerMobileRef}
-                className="overflow-y-auto custom-scrollbar relative max-w-md mx-auto"
+                className="overflow-hidden relative max-w-md mx-auto"
                 style={{ height: filteredVessels.length > 2 ? '416px' : 'auto' }}
                 onMouseEnter={() => setIsHoveredMobile(true)}
                 onMouseLeave={() => {
@@ -801,17 +802,12 @@ export default function VTSBoard() {
           </section>
         )}
 
-        {/* Footer info text */}
-        <div className="flex justify-end pt-2">
-          <span className="text-[11px] text-slate-500 font-mono tracking-wider bg-slate-950/20 px-3 py-1.5 rounded-lg border border-slate-800/30">
-            Created By VTS PANJANG X KP TEKNIK INFORMATIKA ITERA 2026
-          </span>
-        </div>
+
 
       </div>
 
       {/* Floating Search Button */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+      <div className="fixed bottom-16 right-6 z-40 flex flex-col items-end gap-3">
         {/* Search Input Popup */}
         {isSearchOpen && (
           <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl shadow-2xl animate-in slide-in-from-bottom-5 fade-in">
@@ -832,12 +828,19 @@ export default function VTSBoard() {
           className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(34,211,238,0.4)] w-14 h-14 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
         >
           {isSearchOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+            <svg suppressHydrationWarning className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
           ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <svg suppressHydrationWarning className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           )}
         </button>
       </div>
+
+      {/* Footer info text */}
+      <footer className="fixed bottom-0 left-0 right-0 w-full bg-slate-950/80 border-t border-slate-800/50 py-3 text-center backdrop-blur-md z-30">
+        <p className="text-[11px] text-slate-400 font-mono tracking-wider">
+          Created By <span className="text-cyan-400 font-bold">VTS PANJANG</span> X <Link href="/developers" className="text-cyan-400 font-bold hover:text-cyan-300 transition-colors cursor-pointer">KP TEKNIK INFORMATIKA ITERA 2026</Link>
+        </p>
+      </footer>
 
       {/* Vessel Detail Modal Overlay */}
       {selectedVessel && (
@@ -860,7 +863,7 @@ export default function VTSBoard() {
                 onClick={() => setSelectedVessel(null)}
                 className="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-1.5 rounded-lg transition-all"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg suppressHydrationWarning className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -925,7 +928,7 @@ export default function VTSBoard() {
                             rel="noopener noreferrer"
                             className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 shadow-lg shadow-cyan-500/20 cursor-pointer"
                           >
-                            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg suppressHydrationWarning className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             </svg>
                             Buka Peta
@@ -961,7 +964,7 @@ export default function VTSBoard() {
                         rel="noopener noreferrer"
                         className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 shadow-lg shadow-cyan-500/20"
                       >
-                        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg suppressHydrationWarning className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         </svg>
                         Buka Peta
