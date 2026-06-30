@@ -57,9 +57,7 @@ export default function DevelopersPage() {
             KEMBALI KE DASHBOARD
           </Link>
           <div className="flex justify-center mb-6">
-            <div className="p-2 rounded-2xl bg-white/5 border border-white/10 shadow-lg backdrop-blur-sm">
-                <img src="/logo-navigasi.png" alt="Logo Navigasi" className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
-            </div>
+            <img src="/logo-navigasi.png" alt="Logo Navigasi" className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             Tim Pengembang

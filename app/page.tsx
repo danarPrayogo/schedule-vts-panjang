@@ -588,9 +588,7 @@ export default function VTSBoard() {
         <header className="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-6 backdrop-blur-md shadow-xl flex flex-col md:flex-row md:justify-between md:items-center gap-6">
           <div className="space-y-4 w-full md:w-auto">
             <div className="flex items-center gap-3">
-              <div className="p-1 rounded-xl bg-white/5 border border-white/10 shadow-lg">
-                <img src="/logo-navigasi.png" alt="Logo Navigasi" className="w-12 h-12 object-contain" />
-              </div>
+              <img src="/logo-navigasi.png" alt="Logo Navigasi" className="w-12 h-12 object-contain" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
                   VTS PANJANG TRAFFIC BOARD
