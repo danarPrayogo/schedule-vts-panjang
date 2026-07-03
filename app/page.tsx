@@ -206,8 +206,8 @@ const fetcher = (url: string): Promise<ParsedVTSResult> => {
 
         // Ekstraksi baris kapal
         if (cleanedRow.length >= 15) {
-          const timeCell = cleanedRow[0];
-          const noCell = cleanedRow[14];
+          const noCell = cleanedRow[0];
+          const timeCell = cleanedRow[1];
 
           const noVal = parseInt(noCell, 10);
           const isNoLike = !isNaN(noVal) && noVal > 0;
@@ -215,21 +215,21 @@ const fetcher = (url: string): Promise<ParsedVTSResult> => {
 
           if (isTimeLike && isNoLike) {
             vessels.push({
-              waktu: timeCell,
-              namaKapal: cleanedRow[1] || '',
-              mmsi: cleanedRow[2] || '',
-              asal: cleanedRow[3] || '',
-              tujuan: cleanedRow[4] || '',
-              eta: cleanedRow[5] || '',
-              waktuSandarLabuh: cleanedRow[6] || '',
-              posisiLabuh: cleanedRow[7] || '',
-              loa: cleanedRow[8] || '',
-              gt: cleanedRow[9] || '',
-              draft: cleanedRow[10] || '',
-              muatan: cleanedRow[11] || '',
-              agen: cleanedRow[12] || '',
-              keterangan: cleanedRow[13] || '',
               no: noCell,
+              waktu: timeCell,
+              namaKapal: cleanedRow[2] || '',
+              mmsi: cleanedRow[3] || '',
+              asal: cleanedRow[4] || '',
+              tujuan: cleanedRow[5] || '',
+              eta: cleanedRow[6] || '',
+              waktuSandarLabuh: cleanedRow[7] || '',
+              posisiLabuh: cleanedRow[8] || '',
+              loa: cleanedRow[9] || '',
+              gt: cleanedRow[10] || '',
+              draft: cleanedRow[11] || '',
+              muatan: cleanedRow[12] || '',
+              agen: cleanedRow[13] || '',
+              keterangan: cleanedRow[14] || '',
             });
           }
         }
@@ -650,12 +650,13 @@ export default function VTSBoard() {
           </div>
         ) : (
           <section className="bg-slate-900/20 border border-slate-800/60 rounded-2xl overflow-hidden backdrop-blur-md shadow-xl hidden lg:block">
-            <div className="min-w-[1000px]">
+            <div className="min-w-[1100px]">
               {/* Header Grid */}
-              <div className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest grid grid-cols-[50px_85px_1fr_120px_120px_110px_150px_110px] gap-2 items-center px-6 py-4">
+              <div className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest grid grid-cols-[50px_85px_1fr_100px_120px_120px_110px_150px_110px] gap-2 items-center px-6 py-4">
                 <div className="text-center">No</div>
                 <div>Waktu</div>
                 <div>Nama Kapal / Call Sign</div>
+                <div>MMSI</div>
                 <div>Asal</div>
                 <div>Tujuan</div>
                 <div>ETA</div>
@@ -691,7 +692,7 @@ export default function VTSBoard() {
                       <div
                         key={`${vessel.no}-${index}`}
                         onClick={() => setSelectedVessel(vessel)}
-                        className={`h-[70px] grid grid-cols-[50px_85px_1fr_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
+                        className={`h-[70px] grid grid-cols-[50px_85px_1fr_100px_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
                           } hover:bg-cyan-500/5`}
                       >
                         <div className="text-center text-slate-500 font-mono font-bold text-xs">{vessel.no}</div>
@@ -706,6 +707,7 @@ export default function VTSBoard() {
                             </div>
                           )}
                         </div>
+                        <div className="font-mono text-xs text-slate-300 truncate">{vessel.mmsi || '-'}</div>
                         <div className="text-slate-200 font-semibold uppercase truncate">{vessel.asal}</div>
                         <div className="text-cyan-400 font-bold uppercase truncate">{vessel.tujuan}</div>
                         <div className="font-mono text-xs text-slate-300 truncate">{vessel.eta}</div>
