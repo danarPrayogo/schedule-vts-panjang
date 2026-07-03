@@ -650,15 +650,16 @@ export default function VTSBoard() {
           </div>
         ) : (
           <section className="bg-slate-900/20 border border-slate-800/60 rounded-2xl overflow-hidden backdrop-blur-md shadow-xl hidden lg:block">
-            <div className="min-w-[1100px]">
+            <div className="min-w-[1200px]">
               {/* Header Grid */}
-              <div className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest grid grid-cols-[50px_85px_1fr_100px_120px_120px_110px_150px_110px] gap-2 items-center px-6 py-4">
+              <div className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest grid grid-cols-[50px_85px_1fr_100px_120px_120px_120px_110px_150px_110px] gap-2 items-center px-6 py-4">
                 <div className="text-center">No</div>
                 <div>Waktu</div>
                 <div>Nama Kapal / Call Sign</div>
                 <div>MMSI</div>
                 <div>Asal</div>
                 <div>Tujuan</div>
+                <div>Time Departure</div>
                 <div>ETA</div>
                 <div>Waktu Sandar / Labuh</div>
                 <div>Keterangan</div>
@@ -692,7 +693,7 @@ export default function VTSBoard() {
                       <div
                         key={`${vessel.no}-${index}`}
                         onClick={() => setSelectedVessel(vessel)}
-                        className={`h-[70px] grid grid-cols-[50px_85px_1fr_100px_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
+                        className={`h-[70px] grid grid-cols-[50px_85px_1fr_100px_120px_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
                           } hover:bg-cyan-500/5`}
                       >
                         <div className="text-center text-slate-500 font-mono font-bold text-xs">{vessel.no}</div>
@@ -710,16 +711,29 @@ export default function VTSBoard() {
                         <div className="font-mono text-xs text-slate-300 truncate">{vessel.mmsi || '-'}</div>
                         <div className="text-slate-200 font-semibold uppercase truncate">{vessel.asal}</div>
                         <div className="text-cyan-400 font-bold uppercase truncate">{vessel.tujuan}</div>
+                        <div>
+                          {vessel.waktuSandarLabuh.toUpperCase().includes('TD') ? (
+                            <span className="font-semibold text-xs uppercase px-2 py-1 rounded inline-block text-cyan-400 bg-cyan-400/10 border border-cyan-500/20">
+                              {vessel.waktuSandarLabuh}
+                            </span>
+                          ) : (
+                            <span className="text-slate-500">-</span>
+                          )}
+                        </div>
                         <div className="font-mono text-xs text-slate-300 truncate">{vessel.eta}</div>
                         <div>
-                          <span className={`font-semibold text-xs uppercase px-2 py-1 rounded inline-block ${vessel.waktuSandarLabuh.toUpperCase().includes('ANCHOR') || vessel.waktuSandarLabuh.toUpperCase().includes('ANCOR')
-                            ? 'text-amber-400 bg-amber-400/10 border border-amber-500/20'
-                            : vessel.waktuSandarLabuh.toUpperCase().includes('TD')
-                              ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-500/20'
+                          {vessel.waktuSandarLabuh.toUpperCase().includes('TD') ? (
+                            <span className="font-semibold text-xs uppercase px-2 py-1 rounded inline-block text-sky-400 bg-sky-400/10 border border-sky-500/20">
+                              OUT
+                            </span>
+                          ) : (
+                            <span className={`font-semibold text-xs uppercase px-2 py-1 rounded inline-block ${vessel.waktuSandarLabuh.toUpperCase().includes('ANCHOR') || vessel.waktuSandarLabuh.toUpperCase().includes('ANCOR')
+                              ? 'text-amber-400 bg-amber-400/10 border border-amber-500/20'
                               : 'text-slate-300 bg-slate-800'
-                            }`}>
-                            {vessel.waktuSandarLabuh || '-'}
-                          </span>
+                              }`}>
+                              {vessel.waktuSandarLabuh || '-'}
+                            </span>
+                          )}
                         </div>
                         <div className="overflow-hidden">{renderRemarksBadges(vessel.keterangan)}</div>
                       </div>
@@ -797,12 +811,20 @@ export default function VTSBoard() {
                           <span className="font-semibold text-cyan-400 uppercase truncate text-xs">{vessel.tujuan}</span>
                         </div>
                         <div className="truncate">
+                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">Time Departure</span>
+                          <span className="font-semibold text-cyan-400 truncate text-xs">
+                            {vessel.waktuSandarLabuh.toUpperCase().includes('TD') ? vessel.waktuSandarLabuh : '-'}
+                          </span>
+                        </div>
+                        <div className="truncate">
                           <span className="block text-slate-500 font-semibold uppercase text-[9px]">ETA</span>
                           <span className="font-mono text-slate-300 truncate text-xs">{vessel.eta || '-'}</span>
                         </div>
-                        <div className="col-span-2 truncate">
+                        <div className="truncate">
                           <span className="block text-slate-500 font-semibold uppercase text-[9px]">Waktu Sandar / Labuh</span>
-                          <span className="font-semibold text-slate-200 truncate text-xs">{vessel.waktuSandarLabuh || '-'}</span>
+                          <span className="font-semibold text-slate-200 truncate text-xs">
+                            {vessel.waktuSandarLabuh.toUpperCase().includes('TD') ? 'OUT' : (vessel.waktuSandarLabuh || '-')}
+                          </span>
                         </div>
                       </div>
                     </div>
