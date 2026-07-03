@@ -595,7 +595,7 @@ export default function VTSBoard() {
                 </h1>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <svg suppressHydrationWarning className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -617,7 +617,7 @@ export default function VTSBoard() {
                 {timeStr || '00:00:00 LT'}
               </span>
             </div>
-            
+
             <div className="flex items-center gap-3 bg-slate-900/40 border border-slate-800/60 px-4 py-2 rounded-xl backdrop-blur-md shadow-sm w-full justify-between">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2.5 w-2.5">
@@ -661,7 +661,7 @@ export default function VTSBoard() {
                 <div>Tujuan</div>
                 <div>Time Departure</div>
                 <div>ETA</div>
-                <div>Waktu Sandar / Labuh</div>
+                <div>Waktu Sandar / Labuh / OUT</div>
                 <div>Keterangan</div>
               </div>
 
@@ -821,7 +821,7 @@ export default function VTSBoard() {
                           <span className="font-mono text-slate-300 truncate text-xs">{vessel.eta || '-'}</span>
                         </div>
                         <div className="truncate">
-                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">Waktu Sandar / Labuh</span>
+                          <span className="block text-slate-500 font-semibold uppercase text-[9px]">Waktu Sandar / Labuh / OUT</span>
                           <span className="font-semibold text-slate-200 truncate text-xs">
                             {vessel.waktuSandarLabuh.toUpperCase().includes('TD') ? 'OUT' : (vessel.waktuSandarLabuh || '-')}
                           </span>
