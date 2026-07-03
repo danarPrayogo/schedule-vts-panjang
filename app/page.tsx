@@ -582,7 +582,7 @@ export default function VTSBoard() {
 
 
 
-      <div className="max-w-[1360px] flex-1 w-full mx-auto p-4 md:p-8 space-y-6 pb-20">
+      <div className="max-w-[1600px] flex-1 w-full mx-auto p-4 md:p-8 space-y-6 pb-20">
 
         {/* Header Dashboard */}
         <header className="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-6 backdrop-blur-md shadow-xl flex flex-col md:flex-row md:justify-between md:items-center gap-6">
@@ -649,10 +649,10 @@ export default function VTSBoard() {
             <div className="h-96 bg-slate-900/30 border border-slate-800/60 rounded-2xl animate-pulse"></div>
           </div>
         ) : (
-          <section className="bg-slate-900/20 border border-slate-800/60 rounded-2xl overflow-hidden backdrop-blur-md shadow-xl hidden lg:block">
-            <div className="min-w-[1200px]">
+          <section className="bg-slate-900/20 border border-slate-800/60 rounded-2xl overflow-x-auto custom-scrollbar backdrop-blur-md shadow-xl hidden lg:block">
+            <div className="min-w-[1450px]">
               {/* Header Grid */}
-              <div className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest grid grid-cols-[50px_85px_1fr_100px_120px_120px_120px_110px_150px_110px] gap-2 items-center px-6 py-4">
+              <div className="bg-slate-900/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest grid grid-cols-[50px_85px_minmax(380px,_1fr)_100px_120px_120px_120px_110px_150px_110px] gap-2 items-center px-6 py-4">
                 <div className="text-center">No</div>
                 <div>Waktu</div>
                 <div>Nama Kapal / Call Sign</div>
@@ -693,7 +693,7 @@ export default function VTSBoard() {
                       <div
                         key={`${vessel.no}-${index}`}
                         onClick={() => setSelectedVessel(vessel)}
-                        className={`h-[70px] grid grid-cols-[50px_85px_1fr_100px_120px_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
+                        className={`h-[70px] grid grid-cols-[50px_85px_minmax(380px,_1fr)_100px_120px_120px_120px_110px_150px_110px] gap-2 items-center px-6 border-b border-slate-800/60 text-sm cursor-pointer transition-colors group ${index % 2 === 0 ? 'bg-slate-900/10' : 'bg-slate-900/30'
                           } hover:bg-cyan-500/5`}
                       >
                         <div className="text-center text-slate-500 font-mono font-bold text-xs">{vessel.no}</div>
