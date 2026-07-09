@@ -7,36 +7,18 @@ export default function DevelopersPage() {
   const developers = [
     {
       name: 'Danar Prayogo',
-      role: 'Lead Fullstack Developer',
-      description: 'Bertanggung jawab atas arsitektur utama aplikasi, sinkronisasi real-time SWR dengan Google Sheets, serta manajemen state untuk monitoring lalu lintas kapal.',
+      role: 'Lead Fullstack Developer & DevOps',
+      description: 'Bertanggung jawab atas arsitektur utama aplikasi, sinkronisasi real-time SWR dengan Google Sheets, integrasi koordinat kapal, serta konfigurasi deployment sistem VTS Panjang.',
       image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600',
       instagram: '#',
       linkedin: '#',
       github: '#'
     },
     {
-      name: 'Gian Ivander',
-      role: 'UI / UX Designer',
-      description: 'Merancang antarmuka dashboard VTS yang modern, interaktif, dan intuitif bagi operator untuk melacak pergerakan kapal masuk dan keluar.',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600',
-      instagram: '#',
-      linkedin: '#',
-      github: '#'
-    },
-    {
       name: 'Muhammad Dzaky',
-      role: 'Frontend Engineer',
-      description: 'Mengimplementasikan komponen visual, optimasi tabel data interaktif, layout responsif, serta fitur auto-scroll otomatis untuk layar monitoring.',
+      role: 'Frontend Engineer & UI/UX Designer',
+      description: 'Merancang antarmuka dashboard VTS yang modern, responsif, dan intuitif bagi operator, serta mengimplementasikan komponen visual, optimasi tabel data, dan fitur auto-scroll otomatis.',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600',
-      instagram: '#',
-      linkedin: '#',
-      github: '#'
-    },
-    {
-      name: 'Nahli Saud\nRamdani',
-      role: 'DevOps & API Specialist',
-      description: 'Mengatur konfigurasi deployment, optimasi performa parsing data CSV dari Google Sheets, dan integrasi konversi koordinat kapal ke Google Maps.',
-      image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=600',
       instagram: '#',
       linkedin: '#',
       github: '#'
@@ -83,7 +65,7 @@ export default function DevelopersPage() {
         </header>
 
         {/* Grid of Developer Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto w-full">
           {developers.map((dev, index) => (
             <div key={index} className="relative group w-full h-[460px] cursor-pointer">
               {/* Stacked Border 1 (Rotated Clockwise on hover) */}
