@@ -10,9 +10,9 @@ export default function DevelopersPage() {
       role: 'Lead Fullstack Developer & DevOps',
       description: 'Bertanggung jawab atas arsitektur utama aplikasi, sinkronisasi real-time SWR dengan Google Sheets, integrasi koordinat kapal, serta konfigurasi deployment sistem VTS Panjang.',
       image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600',
-      instagram: '#',
+      instagram: 'https://www.instagram.com/danar.prayoga.149?igsh=MTVjZHJxcXgxOWhzYg==',
       linkedin: '#',
-      github: '#'
+      github: 'https://github.com/danarPrayogo'
     },
     {
       name: 'Muhammad Dzaky',
