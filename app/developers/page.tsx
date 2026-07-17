@@ -11,7 +11,6 @@ export default function DevelopersPage() {
       description: 'Bertanggung jawab atas arsitektur utama aplikasi, sinkronisasi real-time SWR dengan Google Sheets, integrasi koordinat kapal, serta konfigurasi deployment sistem VTS Panjang.',
       image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600',
       instagram: 'https://www.instagram.com/danar.prayoga.149?igsh=MTVjZHJxcXgxOWhzYg==',
-      linkedin: '#',
       github: 'https://github.com/danarPrayogo'
     },
     {
@@ -20,7 +19,6 @@ export default function DevelopersPage() {
       description: 'Mengembangkan sistem API untuk menghubungkan antara data dari Google Sheets dengan aplikasi, serta mengelola optimasi parsing data CSV dan integrasi koordinat kapal ke Google Maps.',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600',
       instagram: 'https://www.instagram.com/dzaky1605?igsh=MXQ5ZTZsOGYwNmgwMQ==',
-      linkedin: '#',
       github: 'https://github.com/14-039-MuhammadDzaky'
     }
   ];
@@ -119,15 +117,6 @@ export default function DevelopersPage() {
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                         <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                      </svg>
-                    </a>
-                    <a
-                      href={dev.linkedin}
-                      className="w-10 h-10 rounded-full bg-slate-900/60 hover:bg-slate-950 text-slate-300 hover:text-white flex items-center justify-center border border-slate-800 hover:border-slate-600 hover:scale-110 transition-all duration-200"
-                      aria-label="LinkedIn"
-                    >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                       </svg>
                     </a>
                     <a
