@@ -16,12 +16,12 @@ export default function DevelopersPage() {
     },
     {
       name: 'Muhammad Dzaky',
-      role: 'Frontend Engineer & UI/UX Designer',
-      description: 'Merancang antarmuka dashboard VTS yang modern, responsif, dan intuitif bagi operator, serta mengimplementasikan komponen visual, optimasi tabel data, dan fitur auto-scroll otomatis.',
+      role: 'Backend Engineer',
+      description: 'Mengembangkan sistem API untuk menghubungkan antara data dari Google Sheets dengan aplikasi, serta mengelola optimasi parsing data CSV dan integrasi koordinat kapal ke Google Maps.',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600',
-      instagram: '#',
+      instagram: 'https://www.instagram.com/dzaky1605?igsh=MXQ5ZTZsOGYwNmgwMQ==',
       linkedin: '#',
-      github: '#'
+      github: 'https://github.com/14-039-MuhammadDzaky'
     }
   ];
 
@@ -70,7 +70,7 @@ export default function DevelopersPage() {
             <div key={index} className="relative group w-full h-[460px] cursor-pointer">
               {/* Stacked Border 1 (Rotated Clockwise on hover) */}
               <div className="absolute inset-0 border-2 border-cyan-500 rounded-[32px] opacity-0 scale-95 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:rotate-[6deg] group-hover:translate-x-1 group-hover:translate-y-1 -z-10 pointer-events-none shadow-[0_0_20px_rgba(6,182,212,0.25)]" />
-              
+
               {/* Stacked Border 2 (Rotated Counter-Clockwise on hover) */}
               <div className="absolute inset-0 border-2 border-cyan-500/60 rounded-[32px] opacity-0 scale-95 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:rotate-[-4deg] group-hover:-translate-x-1 group-hover:-translate-y-1 -z-20 pointer-events-none" />
 
@@ -83,7 +83,7 @@ export default function DevelopersPage() {
                 >
                   {/* Bottom Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#070b13] via-[#070b13]/50 to-transparent -z-10" />
-                  
+
                   <div className="z-10">
                     <h3 className="text-xl font-extrabold text-white tracking-wide uppercase leading-tight font-sans whitespace-pre-line">
                       {dev.name}
