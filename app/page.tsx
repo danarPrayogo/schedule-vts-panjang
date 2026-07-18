@@ -12,7 +12,7 @@ import Footer from './components/Footer';
 
 export default function VTSBoard() {
   const sheetUrl =
-    'https://docs.google.com/spreadsheets/d/104VYfDm-RsN1tB6XgAe3TNMzob4WcTnuNDhuQ5iYUi4/export?format=csv&gid=0';
+    'https://docs.google.com/spreadsheets/d/12LiKh6sfYoqf74nyr1-mVbdyfO7QN5PHu7oE-kCuXcM/export?format=csv&gid=0';
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<ParsedVTSResult>(
     sheetUrl,
