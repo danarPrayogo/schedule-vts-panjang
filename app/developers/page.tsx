@@ -9,9 +9,10 @@ export default function DevelopersPage() {
       name: 'Danar Prayogo',
       role: 'Lead Fullstack Developer & DevOps',
       description: 'Bertanggung jawab atas arsitektur utama aplikasi, sinkronisasi real-time SWR dengan Google Sheets, integrasi koordinat kapal, serta konfigurasi deployment sistem VTS Panjang.',
-      image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600',
+      image: '/dp.jpg',
       instagram: 'https://www.instagram.com/danar.prayoga.149?igsh=MTVjZHJxcXgxOWhzYg==',
-      github: 'https://github.com/danarPrayogo'
+      github: 'https://github.com/danarPrayogo',
+      imageStyle: { backgroundSize: '150%', backgroundPosition: 'center 20%' }
     },
     {
       name: 'Muhammad Dzaky',
@@ -19,7 +20,8 @@ export default function DevelopersPage() {
       description: 'Mengembangkan sistem API untuk menghubungkan antara data dari Google Sheets dengan aplikasi, serta mengelola optimasi parsing data CSV dan integrasi koordinat kapal ke Google Maps.',
       image: '/dzaky.jpg',
       instagram: 'https://www.instagram.com/dzaky1605?igsh=MXQ5ZTZsOGYwNmgwMQ==',
-      github: 'https://github.com/14-039-MuhammadDzaky'
+      github: 'https://github.com/14-039-MuhammadDzaky',
+      imageStyle: {}
     }
   ];
 
@@ -76,7 +78,7 @@ export default function DevelopersPage() {
               <div className="relative w-full h-full rounded-[32px] overflow-hidden border-[3px] border-slate-800/80 group-hover:border-cyan-400 shadow-[0_6px_20px_rgba(0,0,0,0.4)] group-hover:shadow-[0_12px_35px_rgba(6,182,212,0.35)] transition-all duration-500 ease-out bg-[#070b13]">
                 {/* Front Side: Photo with Gradient Overlay */}
                 <div
-                  style={{ backgroundImage: `url(${dev.image})` }}
+                  style={{ backgroundImage: `url(${dev.image})`, ...dev.imageStyle }}
                   className="absolute inset-0 bg-cover bg-center transition-all duration-500 ease-out scale-100 group-hover:scale-110 group-hover:opacity-0 flex flex-col justify-end p-6 bg-slate-900"
                 >
                   {/* Bottom Gradient overlay */}
