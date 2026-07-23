@@ -7,8 +7,8 @@ export default function DevelopersPage() {
   const developers = [
     {
       name: 'Danar Prayogo',
-      role: 'Lead Fullstack Developer & DevOps',
-      description: 'Bertanggung jawab atas arsitektur utama aplikasi, sinkronisasi real-time SWR dengan Google Sheets, integrasi koordinat kapal, serta konfigurasi deployment sistem VTS Panjang.',
+      role: 'Lead Fullstack Developer & Frontend',
+      description: 'Bertanggung jawab atas arsitektur utama aplikasi, merancang antarmuka pengguna (UI/UX) yang interaktif dan responsif, serta mengelola sinkronisasi data real-time pada sistem VTS Panjang.',
       image: '/dp.jpg',
       instagram: 'https://www.instagram.com/danar.prayoga.149?igsh=MTVjZHJxcXgxOWhzYg==',
       github: 'https://github.com/danarPrayogo',
