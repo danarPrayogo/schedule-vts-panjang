@@ -17,7 +17,7 @@ export default function DevelopersPage() {
       name: 'Muhammad Dzaky',
       role: 'Backend Engineer',
       description: 'Mengembangkan sistem API untuk menghubungkan antara data dari Google Sheets dengan aplikasi, serta mengelola optimasi parsing data CSV dan integrasi koordinat kapal ke Google Maps.',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600',
+      image: '/dzaky.jpg',
       instagram: 'https://www.instagram.com/dzaky1605?igsh=MXQ5ZTZsOGYwNmgwMQ==',
       github: 'https://github.com/14-039-MuhammadDzaky'
     }
