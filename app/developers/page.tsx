@@ -21,7 +21,7 @@ export default function DevelopersPage() {
       image: '/dzaky.jpg',
       instagram: 'https://www.instagram.com/dzaky1605?igsh=MXQ5ZTZsOGYwNmgwMQ==',
       github: 'https://github.com/14-039-MuhammadDzaky',
-      imageStyle: {}
+      imageStyle: { backgroundSize: '130%', backgroundPosition: 'center 25%' }
     }
   ];
 
